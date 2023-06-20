@@ -1,0 +1,630 @@
+RH124 Notes
+===========
+Kelvin Lai Kok Foong
++6012-295 9502
+
+whatsapp, line, wechat
+
+kelvin@myrc.biz
+kelvinlnx@yahoo.com
+kelvinlnx@gmail.com
+
+
+Command Line Syntax:
+	<COMMAND> [<OPTION>]... [<ARGUMENT>]...
+Where,
+	<OPTION>  - sets the behaviour of the command
+		  - CHARACTER OPTIONS
+			a. starts with a single dash (-)
+			b. represented by A SINGLE character.
+			c. IS CASE SENSITIVE
+			d. Can combine together (-a -b -c => -abc or -cab)
+			e. optionally can be followed by an argument that it is operating on. In that case the argument MUST be right after that option.  (NOTE: in Linux the space between such an option is sometimes optional)
+		  - WORDED OPTIONS
+			a. starts with a double dash (--)
+			b. represented by A WORD.
+			c. IS CASE SENSITIVE
+			eg. --help --me --hello
+		  - can be mixture of worded and character option
+			eg. --filename ABC -p --value=20
+
+	<ARGUMENT> - extra parameters to your cmd, constant value, pathname, device name, network address, Variable, etc.
+
+
+*** space is a separator on the command line
+*** semi-colon(;) is a command separator on the command line
+
+Eg:
+	abc		# abc is the command
+	x=10		# x=10 is the command
+	y = 20		# y is the commmand
+
+	tar -x -v -z -f file1.tar.gz -C /tmp
+	tar -xvz -ffile1.tar.gz -C /tmp
+		Options: 5 (-x -v -z -f -C)
+		Arguments: 2 ( file1.txt.gz, /tmp )
+
+	abc -ca -t -d2 3 --value 5
+		Options: 6 (-c -a -t -d -2 --value)
+			 5 (-c -a -t -d2 --value)
+			   (-c -t -d -2 --value)
+			 4 (-c -t -d --value)
+			 *** depending on the syntax of the command
+		Arguments: 2( 3 and 5)
+			   1( 5)
+
+	ls; date ;cal	# will be treated as below
+	ls<ENTER>
+	date <ENTER>
+	cal<ENTER>
+
+
+COMMANDS:
+=========
+	ls [-laid] [<PATHNAME>]...
+	passwd [--stdin] [<USERNAME>]
+	su - [<USERNAME>]
+	exit   OR  <CTRL> + d
+	whoami
+	id
+	date
+	cat [<PATHNAME>]...
+	
+	head [-[n ]<LINES>] [<PATHNAME>]...
+	tail [-[n ]<LINES>] [<PATHNAME>]...
+	more [<PATHNAME>]
+	less [<PATHNAME>]
+	wc [-lwmc] [<PATHNAME>]...
+	mail [-s <SUBJECT>] <EMAIL_ADD>
+	mutt [-s <SUBJECT>] [-a <PATHNAME>] <EMAIL_ADD>
+	tee <PATHNAME>
+	sort [-r] [-n]
+	lp|lpr
+	grep <PATTERN> [<PATHNAME>]
+	
+	ssh [-i <IDENTITY_FILE>] [<USERNAME>@]<HOSTNAME> [<CMD>]
+		ssh server1.example.com
+		ssh albert@server1.example.com
+		ssh -i myidentity.pem julie@serverX
+		FILES:
+			/etc/ssh/ssh_config		# system wide client config
+			/etc/ssh/sshd_config		# daemon config
+				PermitRootLogin no
+				PasswordAuthentication no
+				# remember to systemctl reload-or-restart sshd after editing
+			~/.ssh				# 700 and owner of the dir
+			~/.ssh/known_hosts
+			~/.ssh/authorized_keys		# must be owned by user and 600
+	ssh-keygen [-t dsa | ecdsa | ed25519 | rsa]
+	ssh-copy-id <USER>@<HOSTNAME>
+
+
+	cp [-a] <SRC_FILE> <DEST_FILE/DIR>
+		cp file1 file2
+		cp file1 /tmp
+	cp [-a|r] <SRC_FILE/DIR>... <DEST_DIR>
+		cp /tmp/file1 /etc/passwd fileX /opt/my_project_dir
+		cp -a ./projX_dir /srv/www/html/proj_y_dir
+		cp -a file1 dir2 dir3
+
+	mv <SRC_FILE> <DEST_FILE/DIR>			# rename/move
+	mv <SRC_FILE/DIR>... <DEST_DIR>
+	
+	cd <DIR>
+
+	mkdir [-p] <PATH>...
+		mkdir -p dir1 dir2/dir3 dir4
+	rmdir [-p] <PATH>...				# only deletes dir if it's empty
+		rmdir -p dir1 dir2/dir3 dir4
+
+	rm [-rf] <PATH>...
+		rm file1 /tmp/file2 /usr/local/myapp
+		rm -r ~/projX 
+
+	touch <PATH>...
+	ln [-s] <SRC_FILE> <LINK_NAME>
+
+	man [<SECTION>] [-k] <KEYWORD>
+		j, k, spacebar, g, G - navigation
+		/[<KEYWORD>], ?[<KEYWORD>], n, N  - search
+		q - quit
+		h - help
+
+	info <KEYWORD>
+	
+	set 			# display all variables & functions
+	env			# displays all environment variables
+
+
+	useradd [-g <PGROUP>] [-G <GROUP>,...] [-c <GECOS>] [-s <CMD>] <USERNAME>
+	usermod [-g <PGROUP>] [[-a] -G <GROUP>,...] [-c <GECOS>] [-s <CMD>] <USERNAME>
+		useradd julie				# default is /bin/bash for <CMD>
+		useradd -s /sbin/nologin julie		# set <CMD> as /sbin/nologin
+	usermod -L|U <USERNAME>
+	passwd -l|u <USERNAME>
+	userdel [-r] <USERNAME>
+
+	groupadd <GROUPNAME>
+	groupmod -g <GID> <GROUPNAME>
+	groupdel <GROUPNAME>
+
+	chage -l <USERNAME>
+	chage -M <MAX> -m <MIN> -W <WARN> -I <INACTIVE> <USERNAME>
+
+	df [-hiT]
+
+
+SHELL FEATURES:
+	Quoting
+	-------
+	'' - ignore everything within the single quote
+	"" - ignore everything within the double quotes EXCEPT substitutions
+	\  - ignore the next character
+
+
+	I/O Redirection (refer to diagram)
+	---------------
+	Output Redirection
+		CMD > <FILENAME>	# overwrite
+		CMD >> <FILENAME>	# append
+	Error Redirection
+		CMD 2> <FILENAME>	# overwrite
+		CMD 2>> <FILENAME>	# append
+	Output & Error Redirection
+		CMD >|>> <FILENAME>  2>|>> <FILENAME>	# redirect to different files
+		CMD >|>> <FILENAME> 2>&1		# redirect to same file (old)
+		CMD &>|>> <FILENAME>			# redirect to same file (new)
+
+	*** anything that is not needed just redirect to /dev/null instead of a file
+
+	Input Redirection
+		CMD < <FILENAME>
+		CMD << <WORD>
+
+
+
+Filesystem Hierarchical Structure (man 7 hier)
+=================================
+
+/ - root of the filesystem (root directory)
+/boot			directory where the kernel resides
+
+/home/<USERNAME>	Users Home Dir
+/root			root users home dir
+
+/tmp			temporary directory used to store files used by the OS(system)
+/var/tmp		temporary directory used by applications
+
+/etc			system wide configuration dir
+
+/bin			user binaries/commands
+/usr/bin
+
+/sbin			system binaries/commands
+/usr/sbin
+
+/lib			shared libraries
+/usr/lib
+
+/usr			Unix System Resources NOT USER
+/usr/local/bin		custom user cmds/scripts
+/usr/local/sbin		custom system cmds/scripts
+/usr/local/lib		custom libs
+
+/var			Variable
+/var/spool/mail		email spool dir
+/var/spool/cups		printer spool dir
+/var/log		system log dir
+
+/proc			doesn't exists on the filesystem (live kernel parameters)
+/sys			doesn't exists on the filesystem (live kernel parameters)
+/dev			directory contents are device files
+
+
+
+File Types (first character of the ls -l command)
+==========
+d - directory/folder
+l - soft link
+- - regular file
+b - block device
+c - character device
+p - pipe
+s - socket
+
+Pathnames
+=========
+**** / is the separator
+
+Absolute Pathname
+	- Always start from the / directory
+	eg. /var/log/messages
+
+Relative Pathname
+	- Start from where you are (current directory)
+	eg. Documents/notes, ./Documents/notes, ../file1
+
+Permissions
+===========
+**** GOLDEN KEYWORD = "CONTENTS OF"
+	r	read the CONTENTS OF the FILE(everything-7 types of files)
+	w	make changes to the CONTENTS OF the FILE
+			regular file - edit or append to the file
+			directory    - create, delete or rename a file in the directory
+	x	execute the CONTENTS OF the FILE
+			regular file - you can execute the file (command or script)
+			directory    - you can access the directory (cd into it)
+
+****	Precedence (ORDER/SEQUENCE) ***************
+	---------------------------
+	1. process user = file user => file user(owner) permission (THE END)
+	2. process group(s) = file group => file group permission (THE END)
+	3. => file others perm
+
+ls -l
+=====
+	File Type
+	|
+	| ---permissions----
+	| USER  GROUP OTHERS  LINK    USER      GROUP     .....    FILE NAME
+	|
+	- r w x r w x r w x     1     albert    linux     .....    file1
+
+
+	Assuming you are user1 and you belong to group1 and linux group, can you cat fileX?
+
+	- r w - - - - r - -     1     julie     linux    .....    fileX
+	    6     0     4
+
+r = 2^2 = 4
+w = 2^1 = 2
+x = 2^0 = 1
+
+2^2 2^1 2^0
+ 4   2   1
+ r   w   x   binary  octal(base 8)
+ -   -   - = 0 0 0 = 0
+ -   -   x = 0 0 1 = 1
+ -   w   - = 0 1 0 = 2
+ -   w   x = 0 1 1 = 3
+ r   -   - = 1 0 0 = 4
+ r   -   x = 1 0 1 = 5
+ r   w   - = 1 1 0 = 6
+ r   w   x = 1 1 1 = 7
+
+	COMMANDS
+	========
+	chown <USER> <PATHNAME>		# only root can change owner
+		chown albert fileX
+	chgrp [<USER>.]<GROUP> <PATHNAME>	# only root and owner of FILE can change
+		chgrp win dir1			# can only change to a group you belong to
+		chgrp root.linux file2
+
+	chmod <WHO><OP><PERM>,... <PATHNAME>	# SYMBOLIC NOTATION
+	      |----no spaces----|
+	chmod <###[#]> <PATHNAME>		# OCTAL/NUMERIC NOTATION
+	where,
+		<WHO> = u - user
+			g - group
+			o - others
+			a - all
+		<OP>  = + - add to
+			- - remove from
+			= - must be exactly
+		<PERM> = r - read
+			 w - write
+			 x - execute
+			 s/t - special perm
+
+		- r w x r w x r w x    fileX
+		         |
+			 V
+		- r w - r - - - - -    fileX
+
+		chmod u=rw,g=r,o=  fileX
+		chmod u-x,go-wx,o-r fileX
+		chmod a-x,go-w,o-r fileX
+		chmod u-x,go=,g+r fileX
+		chmod a=r,u+w,o-r fileX
+		chmod u+w,o-r,a=r fileX		### WRONG!!!!! r--r--r--
+
+		chmod 640 fileX
+
+
+	Default Permission
+	==================
+	file = - r w - r w - r - -
+	         | |   | |   | |
+	dir  = d r w x r w x r - x
+
+	**** RULE ****
+	1. f != x
+	2. d = f = rw
+	3. d = [x]
+
+	1. convert DIRECTORY PERM to BINARY
+		r w x r w x r - x
+		1 1 1 1 1 1 1 0 1
+	2. INVERT all bits
+		0 0 0 0 0 0 0 1 0
+	3. convert to numeric notation, add a 0 in front
+		  0     0     2
+		  0 + 0 0 2
+		  0002
+
+	check with umask
+
+	EXERCISE: Find the umask value if a file permission is to be 640, rw-r-----?
+		file: r w - r - - - - -
+		dir:  r w x r - x - - -
+		1.    1 1 1 1 0 1 0 0 0
+		2.    0 0 0 0 1 0 1 1 1
+		3. 0    0     2     7
+
+	umask 0027
+
+	To make setting umask permanent, edit:
+		1.
+			a) /etc/profile			# system-wide
+			b) /etc/profile.d/		# drop-in config for system-wide
+		2. ~/.bash_profile		# user
+
+
+	Special Permissions
+	-------------------
+
+	Set User ID	Set Group ID	Sticky
+	   (SUID)	   (SGID)	bit
+
+	  User		Group		Others
+
+	  r w x         r w x           r w x
+	  r w s         r w s           r w t
+	  r w S         r w S           r w T
+
+	Special		Execution
+	   0		  0       = -
+	   0		  1	  = x
+	   1		  0 	  = S/T
+	   1		  1	  = s/t
+
+	FILE as in binary command
+	--------------------------
+	   SUID = only affects a binary command NOT SCRIPT.
+	   	= process executes as Owner of COMMAND, not user
+	   SGID = same as SUID but only affects the GROUP and not the USER
+	Directory
+	---------
+	   SGID = any files created in SGID directory will have it's group changed to be the same as the group of the directory
+	   sticky bit = only the owner of the file can delete the file from a directory that has the sticky bit set
+
+	chmod ug+s,o+t anyfileordir
+	chmod 4### my_command		# suid
+	chmod 2### my_command 		# sgid
+	chmod 1### my_dir		# sticky bit
+
+	rwsr-xr-x
+	  1  0  0	# special bit
+
+	chmod a=rx,u+ws command1
+	chmod 4755 command2
+
+	rwxrws---  dir1
+	  0  1  0	# special bit
+
+	chmod g+s dir1
+	chmod 2770 dir1
+
+
+
+Process Management
+==================
+	Commands
+	--------
+	ps [-ef]		# Unix options
+	ps [auxf]		# BSD options
+	
+	Eg:
+		ps -eo pid,ppid,user,state,pcpu,pmem,nice,rss,vsz,cmd
+
+	kill <PID>
+	pkill -U <USERNAME>
+	pgrep -l -u <USERNAME>
+	top
+
+
+	Job Control
+	-----------
+	jobs
+	bg %<JOBNO>
+	fg %<JOBNO>
+	<CTRL> + z
+
+	<CMD>... &		# runs a job in the backgroud
+
+Service Management
+==================
+	systemctl -t help	# list all unit types
+	systemctl -t service list-units [--all]		# list service (all) units
+	systemctl -t service list-unit-files		# list service startup status
+
+	systemctl status <NAME>[.<TYPE>]		# check service status
+	systemctl is-enabled <NAME>[.<TYPE>]
+	systemctl is-failed <NAME>[.<TYPE>]
+	systemctl is-active <NAME>[.<TYPE>]
+	systemctl -t service --failed			# list all failed services
+
+	systemctl start|stop|status|restart|reload <NAME>[.<TYPE>]
+	systemctl enable|disable <NAME>[.<TYPE>]
+	systemctl mask|unmask <NAME>[.<TYPE>]
+
+	systemctl list-dependencies <NAME>[.<TYPE>]
+
+Networking
+==========
+	service name: NetworkManager
+	start/stop/enable: systemctl start|stop|enable|disable|status NetworkManager
+	
+	**** 4 setttings
+		1. ip address
+		2. netmask/prefix
+		3. gateway
+			* must be in the same network as ip address(1)
+		4. dns
+
+	COMMANDS
+	--------
+	ip a[ddr]|l[ink]|r[oute]|rule [ls/list/show [<DEV>]]
+		ip a
+		ip addr
+		ip l
+		ip route list
+	ping [-c <COUNT>] <IPADD>
+	route -n
+	netstat -rn
+
+Archiving and Transferring Files
+================================
+	COMMANDS
+	--------
+	tar {[-]c|t|x} [-v{z|j|J}] {-f <ARCHIVE>.tar[.gz|.bz2|.xz]} [-C <PATH>] [<PATH>...]
+	Where,
+		-c create
+		-t table of contents(view)
+		-x extract
+
+		-v verbose
+
+		-z gzip compression
+		-j bzip2 compression
+		-J xz compression
+
+		-f <ARCHIVE>  archive file to use
+
+		-C <PATH>  only works with -x option in extraction. it extracts to the destination PATH
+
+	scp [-rp] <SRC>... <DEST>
+	rsync [-a] [-v] [--progress] <SRC>... <DEST>
+	Where,
+		-a archive
+		-r recursive
+		-p preserve perm
+		-v verbose
+		--progress show progress of files syncing
+
+		<SRC> = <DEST> = [[<USER>@]<HOSTNAME>:]<PATH>
+	eg.
+		scp file1 user2@server3:/tmp/file5
+		scp user1@server1:file1 user2@server2:.
+		rsync -av --progress user3@server3:/etc/passwd .
+
+	On servera as root user:
+		mkdir /opt/proj
+		cp /etc/passwd /opt/proj
+		echo hi > /opt/proj/greetings
+		chown student /opt/proj/greetings
+		chmod 600 /opt/proj/greetings
+
+		tar cvzf backup.tar.gz /opt/proj /etc/group
+		tar tvzf backup.tar.gz
+		pwd
+		mkdir restore
+		tar xvzf backup.tar.gz -C restore
+		ls -lR restore
+
+		ls
+		scp backup.tar.gz student@serverb:.
+		scp -rp /opt/proj root@serverb:/opt
+		scp -rp /opt/proj root@serverb:/opt
+		scp -rp /opt/proj root@serverb:/opt
+		rsync -av --progress /etc/passwd root@serverb:/opt
+		rsync -av --progress /etc/passwd root@serverb:/opt
+		rsync -av --progress /etc/passwd root@serverb:/opt
+
+		ssh root@serverb ls -lR /opt /home/student
+
+		ssh root@serverb "rm -rf /opt/*"
+		time rsync -av --progress /etc/passwd root@serverb:/opt
+		time rsync -av --progress /etc/passwd root@serverb:/opt
+		time rsync -av --progress /etc/passwd root@serverb:/opt
+
+
+Package Management
+==================
+	Command
+	-------
+	yum [-y] install|reinstall|update|remove|info <PKG_NAME>|all
+	yum [what]provides <FUNCTION/FILENAME/COMMAND>
+	yum search <KEYWORD>
+	yum history
+	yum list [installed|available|update|all|<PKG_NAME>]
+	rpm -q [-il] [--scripts] {<PKG_NAME>|{-f <PATH>}|{-p <PKG_FILE>}|-a}
+	yum-config-manager --add-repo <REPOSITORY_URL>
+
+	Where,
+		<PKG_FILE> = <PKG_NAME>-<VER>[.<SUBVER>]-<REL>.<ARCH>.rpm
+		<REL>      = <REL_NO>[.<DIST>]
+
+		For RHEL8 only use packages that have EL8 as <DIST>
+		EL7 = Enterprise Linux 7
+		    = Red Hat Enterprise Linux 7
+		    = CentOS 7
+		    = Oracle Enterprise Linux 7
+		    = Scientific Linux 7
+
+		EL8 = RHEL8, CentOS8, OEL8
+
+		eg. abc-2.3.4-5.x86_64.rpm, def-1.0-2.SLES.x86.rpm
+
+
+		
+Mounting Filesystems
+====================
+	Device Naming Convention
+	------------------------
+	/dev/hd{a...}[#]		; IDE devices
+		/dev/hda	; primary master whole disk
+		/dev/hdb	; primary slave whole disk
+		/dev/hdc3	; secondary master 3rd partition
+
+	/dev/sd{a...}[#]		; SATA/USB/SCSI devices
+	/dev/vd{a...}[#]		; VirtIO disks used by VMWARE, HyperV, KVM
+	/dev/xvd{a...}[#]		; Virtual Disk in XEN Virtualization
+
+	/dev/md#			; RAID devices
+		/dev/md0	;1st raid dev
+		/dev/md1	;2nd raid dev
+
+	/dev/mt[#]			; Tape drives
+	/dev/st[#]
+
+	/dev/cciss/c#t#d#		; HP Smart Array
+
+	/dev/nvme#[p#]			; NVMe storage
+		/dev/nvme0	;1st nvme disk
+		/dev/nvme1	;2nd nvme disk
+		/dev/nvme2p5	;5th partition on the 3rd nvme disk
+
+	/dev/<VOLUME_GROUP_NAME>/<LOGICAL_VOLUME_NAME>	; LVM
+		/dev/myvg/testing
+
+	Commands
+	--------
+	cat /proc/partitions
+
+	lsblk
+	blkid
+
+	file -s <DEVICE>
+
+	mount [-a] [-t <FSTYPE>] [-o <FS_OPT>] [<DEVICE>] [<MOUNT_POINT>]
+	umount <DEVICE>|<MOUNT_POINT>
+
+	/etc/fstab:
+		<DEVICE>  <MNT_PT>  <FSTYPE>  <FSOPTS> <FS_DUMP> <FSCK>
+	
+	use 0 0 for dump & fsck if the filesystem not locally managed
+	use 1 2 for dump & fsck if the fs is managed by admin
+
+
+	fuser [-mku] <MOUNT_POINT>
