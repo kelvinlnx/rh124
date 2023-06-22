@@ -294,15 +294,15 @@ x = 2^0 = 1
 
 	COMMANDS
 	========
+	chown [<USER>.]<GROUP> <PATHNAME>	# only root and owner of FILE can change
+		chown dummy dir1		# can only change to a group you belong to
+		chown root.linux file2
 	chgrp <USER> <PATHNAME>		# only root can change owner
 		chgrp albert fileX
-	chown [<USER>.]<GROUP> <PATHNAME>	# only root and owner of FILE can change
-		chown dummy dir1			# can only change to a group you belong to
-		chown root.linux file2
 
 	chmod <WHO><OP><PERM>,... <PATHNAME>	# SYMBOLIC NOTATION
 	      |----no spaces----|
-	chmod <###[#]> <PATHNAME>		# OCTAL/NUMERIC NOTATION
+	chmod [#]### <PATHNAME>		# OCTAL/NUMERIC NOTATION
 	where,
 		<WHO> = u - user
 			g - group
