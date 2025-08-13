@@ -369,6 +369,21 @@ x = 2^0 = 1
 			b) /etc/profile.d/		# drop-in config for system-wide
 		2. ~/.bash_profile		# user
 
+	Purpose of startup scripts:
+		1. Login Startup Scripts
+			a) /etc/profile       - system
+			b) /etc/profile.d     - system
+			c) ~/.bash_profile    - user
+		2. Shell Startup Scripts
+			a) ~/.bashrc          - user
+			b) /etc/bashrc        - system
+
+	Login shell vs Non-Login Shell
+	==============================
+	su, bash, gnome-terminal, xterm, etc = non-login shell
+	su -, sudo -i, ssh, etc = login shell
+	Login Shell: 1 & 2
+	Non-Login Shell: 2
 
 	Special Permissions
 	-------------------
